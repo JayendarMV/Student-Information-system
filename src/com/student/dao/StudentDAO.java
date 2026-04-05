@@ -1,128 +1,96 @@
 package com.student.dao;
 
-import com.student.model.Student;
-import com.student.util.DBConnection;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-// Data Access Object - handles all database operations for Student
 public class StudentDAO {
 
-    // 1. ADD a new student
-    public boolean addStudent(Student student) {
-        boolean result = false;
+    public static int addStudent(String name, String email, String course) {
+        int status = 0;
         try {
-            Connection conn = DBConnection.getConnection();
-            String sql = "INSERT INTO students (name, email, course, phone) VALUES (?, ?, ?, ?)";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, student.getName());
-            ps.setString(2, student.getEmail());
-            ps.setString(3, student.getCourse());
-            ps.setString(4, student.getPhone());
+            Connection con = DBConnection.getConnection();
+            PreparedStatement ps = con.prepareStatement(
+                "INSERT INTO students(name,email,course) VALUES(?,?,?)");
 
-            int rows = ps.executeUpdate();
-            if (rows > 0) {
-                result = true;
-            }
-            conn.close();
+            ps.setString(1, name);
+            ps.setString(2, email);
+            ps.setString(3, course);
+
+            status = ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return result;
+        return status;
     }
 
-    // 2. GET all students
-    public List<Student> getAllStudents() {
-        List<Student> list = new ArrayList<>();
+    public static List<String[]> getAllStudents() {
+        List<String[]> list = new ArrayList<>();
+
         try {
-            Connection conn = DBConnection.getConnection();
-            String sql = "SELECT * FROM students";
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
+            Connection con = DBConnection.getConnection();
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM students");
 
             while (rs.next()) {
-                Student s = new Student();
-                s.setId(rs.getInt("id"));
-                s.setName(rs.getString("name"));
-                s.setEmail(rs.getString("email"));
-                s.setCourse(rs.getString("course"));
-                s.setPhone(rs.getString("phone"));
-                list.add(s);
+                list.add(new String[]{
+                    rs.getString("id"),
+                    rs.getString("name"),
+                    rs.getString("email"),
+                    rs.getString("course")
+                });
             }
-            conn.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return list;
     }
 
-    // 3. GET a single student by ID
-    public Student getStudentById(int id) {
-        Student student = null;
+    public static int deleteStudent(int id) {
+        int status = 0;
         try {
-            Connection conn = DBConnection.getConnection();
-            String sql = "SELECT * FROM students WHERE id = ?";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
+            Connection con = DBConnection.getConnection();
+            PreparedStatement ps = con.prepareStatement(
+                "DELETE FROM students WHERE id=?");
 
-            if (rs.next()) {
-                student = new Student();
-                student.setId(rs.getInt("id"));
-                student.setName(rs.getString("name"));
-                student.setEmail(rs.getString("email"));
-                student.setCourse(rs.getString("course"));
-                student.setPhone(rs.getString("phone"));
-            }
-            conn.close();
+            ps.setInt(1, id);
+            status = ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return student;
+        return status;
     }
 
-    // 4. UPDATE a student
-    public boolean updateStudent(Student student) {
-        boolean result = false;
+    public static ResultSet getStudentById(int id) {
+        ResultSet rs = null;
         try {
-            Connection conn = DBConnection.getConnection();
-            String sql = "UPDATE students SET name=?, email=?, course=?, phone=? WHERE id=?";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, student.getName());
-            ps.setString(2, student.getEmail());
-            ps.setString(3, student.getCourse());
-            ps.setString(4, student.getPhone());
-            ps.setInt(5, student.getId());
+            Connection con = DBConnection.getConnection();
+            PreparedStatement ps = con.prepareStatement(
+                "SELECT * FROM students WHERE id=?");
 
-            int rows = ps.executeUpdate();
-            if (rows > 0) {
-                result = true;
-            }
-            conn.close();
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return result;
+        return rs;
     }
 
-    // 5. DELETE a student
-    public boolean deleteStudent(int id) {
-        boolean result = false;
+    public static int updateStudent(int id, String name, String email, String course) {
+        int status = 0;
         try {
-            Connection conn = DBConnection.getConnection();
-            String sql = "DELETE FROM students WHERE id = ?";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, id);
+            Connection con = DBConnection.getConnection();
+            PreparedStatement ps = con.prepareStatement(
+                "UPDATE students SET name=?, email=?, course=? WHERE id=?");
 
-            int rows = ps.executeUpdate();
-            if (rows > 0) {
-                result = true;
-            }
-            conn.close();
+            ps.setString(1, name);
+            ps.setString(2, email);
+            ps.setString(3, course);
+            ps.setInt(4, id);
+
+            status = ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return result;
+        return status;
     }
 }

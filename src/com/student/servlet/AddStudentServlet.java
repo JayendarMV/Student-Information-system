@@ -1,58 +1,21 @@
 package com.student.servlet;
 
 import com.student.dao.StudentDAO;
-import com.student.model.Student;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
+import java.io.*;
 
-import java.io.IOException;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-// Servlet to handle adding a new student
 public class AddStudentServlet extends HttpServlet {
 
-    // GET - show the add student form
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
 
-        RequestDispatcher rd = request.getRequestDispatcher("add-student.jsp");
-        rd.forward(request, response);
-    }
+        String name = req.getParameter("name");
+        String email = req.getParameter("email");
+        String course = req.getParameter("course");
 
-    // POST - save the new student to database
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+        StudentDAO.addStudent(name, email, course);
 
-        // Get form data
-        String name = request.getParameter("name");
-        String email = request.getParameter("email");
-        String course = request.getParameter("course");
-        String phone = request.getParameter("phone");
-
-        // Create Student object
-        Student student = new Student();
-        student.setName(name);
-        student.setEmail(email);
-        student.setCourse(course);
-        student.setPhone(phone);
-
-        // Save to database
-        StudentDAO dao = new StudentDAO();
-        boolean success = dao.addStudent(student);
-
-        if (success) {
-            // Redirect to student list
-            response.sendRedirect("students");
-        } else {
-            // Show error
-            request.setAttribute("error", "Failed to add student!");
-            RequestDispatcher rd = request.getRequestDispatcher("add-student.jsp");
-            rd.forward(request, response);
-        }
+        res.sendRedirect("view");
     }
 }

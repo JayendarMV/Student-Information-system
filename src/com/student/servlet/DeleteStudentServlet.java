@@ -1,29 +1,18 @@
 package com.student.servlet;
 
 import com.student.dao.StudentDAO;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
+import java.io.*;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-// Servlet to handle deleting a student
 public class DeleteStudentServlet extends HttpServlet {
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
 
-        // Get student ID from URL
-        int id = Integer.parseInt(request.getParameter("id"));
+        int id = Integer.parseInt(req.getParameter("id"));
+        StudentDAO.deleteStudent(id);
 
-        // Delete from database
-        StudentDAO dao = new StudentDAO();
-        dao.deleteStudent(id);
-
-        // Redirect back to student list
-        response.sendRedirect("students");
+        res.sendRedirect("view");
     }
 }

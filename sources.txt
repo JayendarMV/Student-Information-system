@@ -1,7 +1,0 @@
-﻿.\src\com\student\dao\StudentDAO.java
-.\src\com\student\model\Student.java
-.\src\com\student\servlet\AddStudentServlet.java
-.\src\com\student\servlet\DeleteStudentServlet.java
-.\src\com\student\servlet\ListStudentServlet.java
-.\src\com\student\servlet\UpdateStudentServlet.java
-.\src\com\student\util\DBConnection.java
