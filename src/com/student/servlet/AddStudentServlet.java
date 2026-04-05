@@ -2,14 +2,20 @@ package com.student.servlet;
 
 import com.student.dao.StudentDAO;
 import com.student.model.Student;
-import java.io.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+
+import java.io.IOException;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 // Servlet to handle adding a new student
 public class AddStudentServlet extends HttpServlet {
 
     // GET - show the add student form
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -18,6 +24,7 @@ public class AddStudentServlet extends HttpServlet {
     }
 
     // POST - save the new student to database
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
